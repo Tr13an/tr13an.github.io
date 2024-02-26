@@ -1,26 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-<script src="https://telegram.org/js/telegram-web-app.js"></script>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Квест комната</title>
-<link rel="stylesheet" href="css/styles.css">
-</head>
-<body>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Квест комната</title>
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <h1>Выберите игру</h1>
 
-<div class="container">
-       <button onclick="window.location.href='bookings.html'" id="bookingButton">ЛАЗЕРТАГ</button>
-</div>
-
-<div class="container">
-       <button onclick="window.location.href='bookings.html'" id="bookingButton">ХОРРОР КВЕСТЫ</button>
-</div>
-
-<div class="container">
-    <button onclick="window.location.href='bookings.html'" id="bookingButton">КВЕСТ-РУМ</button>
-</div>
-
-<script src="js/script.js"></script>
-</body>
+      <button id="btnLazer" onclick="window.location.href='bookings.html'">
+        Лазертаг
+      </button>
+      <button id="btnGidro" onclick="window.location.href='bookings.html'">
+        Гидротаг
+      </button>
+      <button id="btnPryatki" onclick="window.location.href='bookings.html'">
+        Прятки
+      </button>
+      <button id="btnBedlam" onclick="window.location.href='bookings.html'">
+        Бедлам: Последний Пациент
+      </button>
+      <button id="btnCasino" onclick="window.location.href='bookings.html'">
+        Подпольное Казино
+      </button>
+      <button id="btnCrime" onclick="window.location.href='bookings.html'">
+        Место Преступления
+      </button>
+      <button id="btnDracula" onclick="window.location.href='bookings.html'">
+        Замок Дракулы
+      </button>
+      <button id="btnFear" onclick="window.location.href='bookings.html'">
+        Комната Страха
+      </button>
+      <button id="btnLabirint" onclick="window.location.href='bookings.html'">
+        Лабиринт
+      </button>
+      <button id="btnTimeroom" onclick="window.location.href='bookings.html'">
+        Time Room
+      </button>
+    </div>
+  </body>
 </html>
