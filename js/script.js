@@ -1,38 +1,164 @@
-$(document).ready(function() {
-    $("#bookingButton").click(function() {
-        window.location.href = "bookings.html";
-    });
+var Cal = function(divId) {
+    // Сохраняем идентификатор div
+    this.divId = divId;
+    // Дни недели с понедельника
+    this.DaysOfWeek = [
+      'Пн',
+      'Вт',
+      'Ср',
+      'Чтв',
+      'Птн',
+      'Суб',
+      'Вск'
+    ];
+    // Месяцы начиная с января
+    this.Months =['Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь', 'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'];
+    // Устанавливаем текущий месяц, год
+    var d = new Date();
+    this.currMonth = d.getMonth();
+    this.currYear = d.getFullYear();
+    this.currDay = d.getDate();
+  };
+  // Переход к следующему месяцу
+  Cal.prototype.nextMonth = function() {
+    if ( this.currMonth == 11 ) {
+      this.currMonth = 0;
+      this.currYear = this.currYear + 1;
+    }
+    else {
+      this.currMonth = this.currMonth + 1;
+    }
+    this.showcurr();
+  };
+  // Переход к предыдущему месяцу
+  Cal.prototype.previousMonth = function() {
+    if ( this.currMonth == 0 ) {
+      this.currMonth = 11;
+      this.currYear = this.currYear - 1;
+    }
+    else {
+      this.currMonth = this.currMonth - 1;
+    }
+    this.showcurr();
+  };
+  // Показать текущий месяц
+  Cal.prototype.showcurr = function() {
+    this.showMonth(this.currYear, this.currMonth);
+  };
+  // Показать месяц (год, месяц)
+  Cal.prototype.showMonth = function(y, m) {
+    var d = new Date()
+    // Первый день недели в выбранном месяце 
+    , firstDayOfMonth = new Date(y, m, 7).getDay()
+    // Последний день выбранного месяца
+    , lastDateOfMonth =  new Date(y, m+1, 0).getDate()
+    // Последний день предыдущего месяца
+    , lastDayOfLastMonth = m == 0 ? new Date(y-1, 11, 0).getDate() : new Date(y, m, 0).getDate();
+    var html = '<table>';
+    // Запись выбранного месяца и года
+    html += '<thead><tr>';
+    html += '<td colspan="7">' + this.Months[m] + ' ' + y + '</td>';
+    html += '</tr></thead>';
+    // заголовок дней недели
+    html += '<tr class="days">';
+    for(var i=0; i < this.DaysOfWeek.length;i++) {
+      html += '<td>' + this.DaysOfWeek[i] + '</td>';
+    }
+    html += '</tr>';
+    // Записываем дни
+    var i=1;
+    do {
+      var dow = new Date(y, m, i).getDay();
+      // Начать новую строку в понедельник
+      if ( dow == 1 ) {
+        html += '<tr>';
+      }
+      // Если первый день недели не понедельник показать последние дни предыдущего месяца
+      else if ( i == 1 ) {
+        html += '<tr>';
+        var k = lastDayOfLastMonth - firstDayOfMonth+1;
+        for(var j=0; j < firstDayOfMonth; j++) {
+          html += '<td class="not-current">' + k + '</td>';
+          k++;
+        }
+      }
+      // Записываем текущий день в цикл
+      var chk = new Date();
+      var chkY = chk.getFullYear();
+      var chkM = chk.getMonth();
+      if (chkY == this.currYear && chkM == this.currMonth && i == this.currDay) {
+        html += '<td class="today">' + i + '</td>';
+      } else {
+        html += '<td class="normal">' + i + '</td>';
+      }
+      // закрыть строку в воскресенье
+      if ( dow == 0 ) {
+        html += '</tr>';
+      }
+      // Если последний день месяца не воскресенье, показать первые дни следующего месяца
+      else if ( i == lastDateOfMonth ) {
+        var k=1;
+        for(dow; dow < 7; dow++) {
+          html += '<td class="not-current">' + k + '</td>';
+          k++;
+        }
+      }
+      i++;
+    }while(i <= lastDateOfMonth);
+    // Конец таблицы
+    html += '</table>';
+    // Записываем HTML в div
+    document.getElementById(this.divId).innerHTML = html;
+  };
+    // Весь код отображения календаря из предыдущего ответа остается без изменений
+  
+    Cal.prototype.selectDate = function(day) {
+        var selectedDate = day + ' ' + this.Months[this.currMonth] + ' ' + this.currYear;
+        console.log('Выбранная дата: ' + selectedDate);
+      
+        // Показать форму для выбора времени
+        this.showTimeInput(day);
+    };
+    
+    Cal.prototype.showTimeInput = function(day) {
+        var timeInputHtml = '<input type="time" id="timeInput" class="time-input">';
+        timeInputHtml += '<button onclick="submitTime(' + day + ')" class="btn">Подтвердить время</button>';
+        document.getElementById(this.divId).insertAdjacentHTML('beforeend', timeInputHtml);
+    };
+    
+    function submitTime(day) {
+        var selectedTime = document.getElementById("timeInput").value;
+        c.selectTime(day, selectedTime);
+    }
+      
+    Cal.prototype.selectTime = function(day, time) {
+        var selectedDate = day + ' ' + this.Months[this.currMonth] + ' ' + this.currYear;
+        console.log('Выбранная дата и время: ' + selectedDate + ' ' + time);
+    };
+  // При загрузке окна
+  window.onload = function() {
+    // Начать календарь
+    var c = new Cal("divCal");      
+    c.showcurr();
+    // Привязываем кнопки «Следующий» и «Предыдущий»
+    getId('btnNext').onclick = function() {
+      c.nextMonth();
+    };
+    getId('btnPrev').onclick = function() {
+      c.previousMonth();
+    };
 
-    var selectedMonth = new Date().getMonth();
-    var selectedYear = new Date().getFullYear();
-    var selectedDay = "";
-    var selectedTime = "";
-
-    $(".timeButton").click(function() {
-        selectedTime = $(this).data("time");
-        $("#timeSelected").text("Вы выбрали время: " + selectedTime);
-    });
-
-    $("#datepicker").datepicker({
-        minDate: 0,
-        dateFormat: 'yy-mm-dd',
-        defaultDate: new Date(),
-        onSelect: function(dateText) {
-            var selectedDate = new Date(dateText);
-            selectedDay = selectedDate.getDate();
-            var weekDays = new Array('Вс', 'Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб');
-            var dayOfWeek = weekDays[selectedDate.getDay()];
-            
-
-            $("#timeSelected").text("Вы выбрали дату: " + selectedDay + "." + (selectedMonth + 1) + "." + selectedYear + " (" + dayOfWeek + ")");
-            $(".timeButtons").html(""); // Очистка предыдущего выбора времени
-            
-            for (let i = 11; i < 22; i++) { // Генерация кнопок времени (для примера 3 кнопки)
-                var newTimeButton = $("<button>").addClass("timeButton").text((i + 1) * 1 + ":00").data("time", (i + 1) * 3 + ":00");
-                $(".timeButtons").append(newTimeButton);
-                    
-            }
+    // Добавление обработчика для выбора даты
+    document.getElementById(c.divId).addEventListener('click', function(e) {
+        if (e.target.classList.contains('normal')) {
+            var day = e.target.innerText;
+            c.selectDate(day);
         }
     });
-});
+  };
+  
+  // Получить элемент по id
+  function getId(id) {
+    return document.getElementById(id);
+  };
 
